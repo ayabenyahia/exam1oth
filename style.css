@@ -19,3 +19,8 @@ body {
     width: 90%;
     max-width: 900px;
 }
+/* Titres */
+h1 {
+    text-align: center;
+    color: #00796b;
+}
