@@ -1,12 +1,28 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Système de détection de similarité textuelle</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    
-    <h1>test</h1>
+    <div class="container">
+  <h1>Système de détection de similarité textuelle</h1>
+
+  <textarea id="texte1" placeholder="Texte original..."></textarea>
+  <textarea id="texte2" placeholder="Texte à comparer..."></textarea>
+
+  <button id="comparerBtn">Lancer la comparaison</button>
+
+  <p>Taux de similarité : <span id="similarite">0%</span></p>
+
+  <div id="diffContainer">
+    <div class="diffBox" id="diff1"></div>
+    <div class="diffBox" id="diff2"></div>
+  </div>
+</div>
+
+  <script src="script.js"></script>
 </body>
 </html>
