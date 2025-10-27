@@ -3,19 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Système de détection de similarité textuelle</title>
+  <title>Comparateur de Textes</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-  <h1>Système de détection de similarité textuelle</h1>
+      <img id ="logo" src="./IMG_9278.jpeg" alt="..">
+  <h1>Comparateur de Textes Visuel</h1>
 
   <textarea id="texte1" placeholder="Texte original..."></textarea>
   <textarea id="texte2" placeholder="Texte à comparer..."></textarea>
 
-  <button id="comparerBtn">Lancer la comparaison</button>
+  <button id="comparerBtn">Comparer</button>
 
-  <p>Taux de similarité : <span id="similarite">0%</span></p>
+  <p>Diagnostic : <span id="diagnostic">-</span></p>
+  <div id="progress-container">
+  <div id="progress-bar">0%</div>
+</div>
 
   <div id="diffContainer">
     <div class="diffBox" id="diff1"></div>

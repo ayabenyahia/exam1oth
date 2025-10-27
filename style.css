@@ -1,7 +1,7 @@
 /* Police et fond */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #e0f7fa, #fff9c4);
+    background: linear-gradient(135deg, #fff7b0, #fff7b0);
     margin: 0;
     padding: 0;
     display: flex;
@@ -19,8 +19,9 @@ body {
     width: 90%;
     max-width: 900px;
 }
+
 /* Titres */
 h1 {
     text-align: center;
-    color: #00796b;
+    color: #5a81ff;
 }
