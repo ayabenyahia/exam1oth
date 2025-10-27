@@ -89,3 +89,58 @@ textarea:focus {
     overflow-x: auto;
     font-size: 15px;
 }
+* Surlignage */
+.identique {
+    background-color: #a5d6a7; /* vert clair */
+    border-radius: 3px;
+    padding: 2px 4px;
+}
+
+.different {
+    background-color: #ef9a9a; /* rouge clair */
+    border-radius: 3px;
+    padding: 2px 4px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    #diffContainer {
+        flex-direction: column;
+    }
+    .diffBox {
+        flex: 1 1 100%;
+    }
+}
+#diagnostic {
+  font-size: 1.1em;
+  margin-top: 5px;
+  transition: color 0.5s ease;
+}
+/* Barre de progression */
+#progress-container {
+  width: 100%;
+  height: 25px;
+  background-color: #ddd;
+  border-radius: 20px;
+  margin: 10px 0;
+  overflow: hidden;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+
+#progress-bar {
+  height: 100%;
+  width: 0%;
+  background-color: green;
+  color: white;
+  text-align: center;
+  line-height: 25px;
+  border-radius: 20px;
+  transition: width 0.8s ease, background-color 0.5s ease;
+  font-weight: bold;
+}
+#logo{
+    width: 70px;
+    height: 70px;
+    display: flex;
+    justify-content: flex-start;
+}
