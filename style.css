@@ -1,7 +1,7 @@
 /* Police et fond */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: linear-gradient(135deg, #e0f7fa, #fff9c4);
+    background: linear-gradient(135deg, #fff7b0, #fff7b0);
     margin: 0;
     padding: 0;
     display: flex;
@@ -19,10 +19,11 @@ body {
     width: 90%;
     max-width: 900px;
 }
+
 /* Titres */
 h1 {
     text-align: center;
-    color: #00796b;
+    color: #5a81ff;
 }
 /* Textareas stylées */
 textarea {
@@ -53,4 +54,38 @@ textarea:focus {
     font-size: 18px;
     cursor: pointer;
     transition: 0.3s;
+}
+.btn:hover {
+    background: #004d40;
+}
+
+/* Taux de similarité */
+#similarite {
+    font-weight: bold;
+    color: #d84315;
+    font-size: 18px;
+    display: block;
+    text-align: center;
+    margin-top: 15px;
+}
+
+/* Diff visuel */
+#diffContainer {
+    display: flex;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+}
+
+.diffBox {
+    flex: 1 1 45%;
+    padding: 15px;
+    background: #fff7b0;
+    border: 1px solid #5a81ff;
+    border-radius: 10px;
+    min-height: 150px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    overflow-x: auto;
+    font-size: 15px;
 }
