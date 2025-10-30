@@ -1,24 +1,29 @@
-from flask import Flask, render_template
+from flask import Flask, jsonify
 from flask_cors import CORS
+from flask_sqlalchemy import SQLAlchemy
 from controllers.plagiat_controller import plagiat_bp
 
-# Initialisation de l'application Flask
 app = Flask(__name__)
-
-# Configuration CORS pour permettre les requêtes cross-origin
 CORS(app)
 
-# Enregistrement du Blueprint du contrôleur
-app.register_blueprint(plagiat_bp)
+# Configuration de la base de données SQLite
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///plagiarism.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
 
-# Route principale pour servir le frontend
+# Importation du modèle de blacklist après création de db
+from models.blacklist_model import Blacklist
+
+# Création automatique de la base au démarrage
+with app.app_context():
+    db.create_all()
+
 @app.route('/')
-def index():
-    """
-    Route qui sert la page d'accueil (interface utilisateur)
-    """
-    return render_template('index.html')
+def home():
+    return jsonify({"message": "Backend Flask avec blacklist fonctionne !"})
 
-# Point d'entrée de l'application
+# Enregistrement du Blueprint
+app.register_blueprint(plagiat_bp, url_prefix="/api")
+
 if __name__ == '__main__':
-    app.run(debug=True, host='0.0.0.0', port=5000)
+    app.run(debug=True)
