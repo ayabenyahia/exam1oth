@@ -51,24 +51,4 @@ Backend développé par : Benchekchou Imane et Mabrouki Ferdaous
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 Frondend développé par : SY El Hadji Bassirou et Benyahia Aya
