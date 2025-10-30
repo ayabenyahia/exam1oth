@@ -47,8 +47,3 @@ Algorithme : Distance de Levenshtein
 Frontend développé par : SY El Hadji Bassirou et Benyahia Aya
 
 Backend développé par : Benchekchou Imane et Mabrouki Ferdaous
-
-
-
-
-Frondend développé par : SY El Hadji Bassirou et Benyahia Aya
