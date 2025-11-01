@@ -1,23 +1,34 @@
-from flask import Flask, render_template
+from flask import Flask, jsonify
 from flask_cors import CORS
 from controllers.plagiat_controller import plagiat_bp
 
 # Initialisation de l'application Flask
 app = Flask(__name__)
 
-# Configuration CORS pour permettre les requêtes cross-origin
+# Configuration CORS
 CORS(app)
 
 # Enregistrement du Blueprint du contrôleur
 app.register_blueprint(plagiat_bp)
 
-# Route principale pour servir le frontend
+# Route de base (juste pour confirmer que ça marche)
 @app.route('/')
-def index():
-    """
-    Route qui sert la page d'accueil (interface utilisateur)
-    """
-    return render_template('index.html')
+def home():
+    return jsonify({
+        'message': 'API de détection de plagiat',
+        'status': 'opérationnel',
+        'routes_disponibles': [
+            'GET  /api/health',
+            'POST /api/clean-text',
+            'POST /api/extract-words',
+            'POST /api/jaccard-similarity',
+            'POST /api/cosine-similarity',
+            'POST /api/common-words',
+            'POST /api/unique-words',
+            'POST /api/compare',
+            'POST /api/compare-with-highlight'
+        ]
+    })
 
 # Point d'entrée de l'application
 if __name__ == '__main__':

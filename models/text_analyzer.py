@@ -9,7 +9,7 @@ class TextAnalyzer:
     Utilise : Jaccard (basique), Cosinus (vectoriel), TF-IDF (IA/Machine Learning)
     """
     
-    def __init__(self):
+    def _init_(self):
         self.processor = TextProcessor()
         print("✅ Analyseur de texte initialisé avec TF-IDF (IA)")
     
@@ -128,7 +128,7 @@ class TextAnalyzer:
     
     def _calculate_tfidf_similarity(self, text1, text2):
         """
-        🤖 Similarité TF-IDF (Intelligence Artificielle / Machine Learning)
+         Similarité TF-IDF (Intelligence Artificielle / Machine Learning)
         
         TF-IDF = Term Frequency - Inverse Document Frequency
         
