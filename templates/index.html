@@ -3,26 +3,36 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Système de détection de similarité textuelle</title>
-  <link rel="stylesheet" href="style.css">
+  <title>Comparateur de Textes</title>
+
+  <!-- Lien vers le fichier CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
-    <div class="container">
-  <h1>Système de détection de similarité textuelle</h1>
+  <div class="container">
+    <!-- Lien vers l'image -->
+    <img id="logo" src="{{ url_for('static', filename='logo_esisa.jpeg') }}" alt="Logo">
 
-  <textarea id="texte1" placeholder="Texte original..."></textarea>
-  <textarea id="texte2" placeholder="Texte à comparer..."></textarea>
+    <h1>Comparateur de Textes Visuel</h1>
 
-  <button id="comparerBtn">Lancer la comparaison</button>
+    <textarea id="texte1" placeholder="Texte original..."></textarea>
+    <textarea id="texte2" placeholder="Texte à comparer..."></textarea>
 
-  <p>Taux de similarité : <span id="similarite">0%</span></p>
+    <button id="comparerBtn">Comparer</button>
 
-  <div id="diffContainer">
-    <div class="diffBox" id="diff1"></div>
-    <div class="diffBox" id="diff2"></div>
+    <p>Diagnostic : <span id="diagnostic">-</span></p>
+
+    <div id="progress-container">
+      <div id="progress-bar">0%</div>
+    </div>
+
+    <div id="diffContainer">
+      <div class="diffBox" id="diff1"></div>
+      <div class="diffBox" id="diff2"></div>
+    </div>
   </div>
-</div>
 
-  <script src="script.js"></script>
+  <!-- Lien vers le fichier JavaScript -->
+  <script src="{{ url_for('static', filename='script.js') }}"></script>
 </body>
 </html>
