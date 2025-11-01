@@ -7,8 +7,8 @@ Notre groupe est composé de :
 3)Benchekchou Imane
 4)Mabrouki Ferdaous
 
-Ce projet est une application web de détection de plagiat textuel développée avec HTML, CSS, JavaScript pour le Frontend et Python pour le Backend.
-Elle permet de comparer deux textes et d’analyser leur taux de similarité grâce à la distance de Levenshtein, une méthode algorithmique de mesure des différences entre deux chaînes de caractères.
+Ce projet est une application web de détection de plagiat textuel développée avec HTML, CSS, JavaScript pour le Frontend et Python utilisant flask comme API pour le Backend.
+Elle permet de comparer deux textes et d’analyser leur taux de similarité grâce à TF-IDF (Term Frequency - Inverse Document Frequency), méthode d'IA ( Machine Learning et de NLP (Natural Language Processing)) utilisée pour évaluer l'importance d'un mot dans un texte par rapport à un ensemble de documents.
 
 L’objectif est de fournir un outil simple, visuel et rapide permettant aux étudiants, enseignants, rédacteurs ou chercheurs de vérifier si un texte présente des ressemblances significatives avec un autre.
 
@@ -16,6 +16,9 @@ L’objectif est de fournir un outil simple, visuel et rapide permettant aux ét
 
 🧮 Calcul automatique du taux de similarité entre deux textes
 → basé sur la distance de Levenshtein pour une mesure fine mot par mot
+→ basé sur Jaccard Similarity qui compare deux ensembles en calculant le rapport entre leurs éléments communs et leur union totale.
+→ basé sur Cosine Similarity (Méthode vectorielle) pour mesurer la similarité entre deux textes en calculant l'angle entre leurs vecteurs de fréquence de mots.
+→ basé sur TF-IDF (Intelligence Artificielle) pour une mesure fine mot par mot
 
 🎨 Affichage visuel dynamique avec une barre de progression colorée
 → la couleur change selon le niveau de ressemblance (vert → rouge)
