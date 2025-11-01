@@ -7,6 +7,17 @@ plagiat_bp = Blueprint('plagiat', __name__)
 # Instance du modèle
 analyzer = TextAnalyzer()
 
+# Seuil de similarité pour l'ajout à la liste noire (80%)
+BLACKLIST_THRESHOLD = 80.0
+
+def get_user_identifier():
+    """
+    Récupère un identifiant unique pour l'utilisateur.
+    Utilise l'adresse IP si aucun ID utilisateur n'est disponible.
+    En production, ceci devrait être un ID utilisateur de session/login.
+    """
+    # X-Forwarded-For est couramment utilisé par les proxies/load balancers
+    return request.headers.get('X-Forwarded-For', request.remote_addr)
 
 # ========================================
 # ROUTE 1 : Health Check
@@ -31,9 +42,6 @@ def health_check():
 def clean_text():
     """
     Nettoie un texte (minuscules, sans ponctuation, espaces normalisés)
-    Test Postman:
-    POST http://localhost:5000/api/clean-text
-    Body: {"text": "Bonjour, Comment ça va?"}
     """
     try:
         data = request.get_json()
@@ -75,9 +83,6 @@ def clean_text():
 def extract_words():
     """
     Extrait les mots d'un texte
-    Test Postman:
-    POST http://localhost:5000/api/extract-words
-    Body: {"text": "Le chat mange une souris"}
     """
     try:
         data = request.get_json()
@@ -122,9 +127,6 @@ def extract_words():
 def jaccard_similarity():
     """
     Calcule uniquement la similarité de Jaccard
-    Test Postman:
-    POST http://localhost:5000/api/jaccard-similarity
-    Body: {"text1": "...", "text2": "..."}
     """
     try:
         data = request.get_json()
@@ -181,9 +183,6 @@ def jaccard_similarity():
 def cosine_similarity():
     """
     Calcule uniquement la similarité cosinus
-    Test Postman:
-    POST http://localhost:5000/api/cosine-similarity
-    Body: {"text1": "...", "text2": "..."}
     """
     try:
         data = request.get_json()
@@ -238,9 +237,6 @@ def cosine_similarity():
 def common_words():
     """
     Identifie les mots communs entre deux textes
-    Test Postman:
-    POST http://localhost:5000/api/common-words
-    Body: {"text1": "...", "text2": "..."}
     """
     try:
         data = request.get_json()
@@ -290,9 +286,6 @@ def common_words():
 def unique_words():
     """
     Identifie les mots uniques à chaque texte
-    Test Postman:
-    POST http://localhost:5000/api/unique-words
-    Body: {"text1": "...", "text2": "..."}
     """
     try:
         data = request.get_json()
@@ -339,16 +332,22 @@ def unique_words():
 
 
 # ========================================
-# ROUTE 8 : Comparaison complète (comme avant)
+# ROUTE 8 : Comparaison complète (avec logique de Blacklist)
 # ========================================
 @plagiat_bp.route('/api/compare', methods=['POST'])
 def compare_texts():
     """
-    Comparaison complète avec toutes les métriques
-    Test Postman:
-    POST http://localhost:5000/api/compare
-    Body: {"text1": "...", "text2": "..."}
+    Comparaison complète avec toutes les métriques et vérification de la liste noire.
     """
+    user_id = get_user_identifier()
+    
+    # 1. VÉRIFICATION DE LA LISTE NOIRE
+    if analyzer.blacklist_model.is_blacklisted(user_id):
+        return jsonify({
+            'error': f'Accès refusé. Votre identifiant ({user_id}) est dans la liste noire pour plagiat élevé.',
+            'success': False
+        }), 403 # Forbidden
+        
     try:
         data = request.get_json()
         
@@ -367,14 +366,22 @@ def compare_texts():
                 'success': False
             }), 400
         
-        # Analyse complète
+        # 2. Analyse complète
         result = analyzer.analyze_similarity(text1, text2)
+        similarity_percentage = result['similarity_percentage']
+        
+        # 3. LOGIQUE D'AJOUT À LA LISTE NOIRE
+        if similarity_percentage >= BLACKLIST_THRESHOLD:
+            analyzer.blacklist_model.add_to_blacklist(user_id, similarity_percentage)
+            result['warning'] = f"Attention: Taux de similarité ({similarity_percentage}%) est >= {BLACKLIST_THRESHOLD}%. Identifiant ajouté/mis à jour dans la liste noire."
         
         return jsonify({
             'success': True,
-            'similarity_percentage': result['similarity_percentage'],
+            'similarity_percentage': similarity_percentage,
             'method_used': result['method_used'],
-            'details': result['details']
+            'details': result['details'],
+            'user_id_used': user_id,
+            'warning': result.get('warning')
         }), 200
         
     except Exception as e:
@@ -385,16 +392,22 @@ def compare_texts():
 
 
 # ========================================
-# ROUTE 9 : Comparaison avec highlight (comme avant)
+# ROUTE 9 : Comparaison avec highlight (avec logique de Blacklist)
 # ========================================
 @plagiat_bp.route('/api/compare-with-highlight', methods=['POST'])
 def compare_with_highlight():
     """
-    Comparaison avec mise en évidence des différences
-    Test Postman:
-    POST http://localhost:5000/api/compare-with-highlight
-    Body: {"text1": "...", "text2": "..."}
+    Comparaison avec mise en évidence des différences et vérification de la liste noire.
     """
+    user_id = get_user_identifier()
+
+    # 1. VÉRIFICATION DE LA LISTE NOIRE
+    if analyzer.blacklist_model.is_blacklisted(user_id):
+        return jsonify({
+            'error': f'Accès refusé. Votre identifiant ({user_id}) est dans la liste noire pour plagiat élevé.',
+            'success': False
+        }), 403 # Forbidden
+        
     try:
         data = request.get_json()
         
@@ -413,16 +426,25 @@ def compare_with_highlight():
                 'success': False
             }), 400
         
-        # Analyse avec différences
+        # 2. Analyse avec différences
         result = analyzer.analyze_with_differences(text1, text2)
+        similarity_percentage = result['similarity_percentage']
+
+        # 3. LOGIQUE D'AJOUT À LA LISTE NOIRE
+        if similarity_percentage >= BLACKLIST_THRESHOLD:
+            analyzer.blacklist_model.add_to_blacklist(user_id, similarity_percentage)
+            result['warning'] = f"Attention: Taux de similarité ({similarity_percentage}%) est >= {BLACKLIST_THRESHOLD}%. Identifiant ajouté/mis à jour dans la liste noire."
         
         return jsonify({
             'success': True,
-            'similarity_percentage': result['similarity_percentage'],
+            'similarity_percentage': similarity_percentage,
+            'method_used': result['method_used'],
             'common_words': result['common_words'],
             'unique_text1': result['unique_text1'],
             'unique_text2': result['unique_text2'],
-            'details': result['details']
+            'details': result['details'],
+            'user_id_used': user_id,
+            'warning': result.get('warning')
         }), 200
         
     except Exception as e:

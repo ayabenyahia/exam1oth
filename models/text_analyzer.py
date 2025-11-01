@@ -1,7 +1,7 @@
 from utils.text_processor import TextProcessor
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-
+from models.blacklist_model import BlacklistModel # <-- NOUVEL IMPORT
 
 class TextAnalyzer:
     """
@@ -9,8 +9,9 @@ class TextAnalyzer:
     Utilise : Jaccard (basique), Cosinus (vectoriel), TF-IDF (IA/Machine Learning)
     """
     
-    def _init_(self):
+    def __init__(self):
         self.processor = TextProcessor()
+        self.blacklist_model = BlacklistModel() # <-- INITIALISATION DU MODÈLE BLACKLIST
         print("✅ Analyseur de texte initialisé avec TF-IDF (IA)")
     
     
@@ -117,8 +118,9 @@ class TextAnalyzer:
         
         dot_product = sum(a * b for a, b in zip(vec1, vec2))
         
-        norm1 = sum(a * 2 for a in vec1) * 0.5
-        norm2 = sum(b * 2 for b in vec2) * 0.5
+        # Correction de la norme pour utiliser sqrt(somme des carrés)
+        norm1 = sum(a * a for a in vec1) ** 0.5
+        norm2 = sum(b * b for b in vec2) ** 0.5
         
         if norm1 == 0 or norm2 == 0:
             return 0.0
@@ -144,9 +146,9 @@ class TextAnalyzer:
         try:
             # Création du vectoriseur TF-IDF (modèle ML)
             vectorizer = TfidfVectorizer(
-                lowercase=True,           # Normalisation
+                lowercase=True,            # Normalisation
                 token_pattern=r'\b\w+\b', # Extraction de tokens
-                max_features=1000         # Limite de features
+                max_features=1000          # Limite de features
             )
             
             # Transformation des textes en vecteurs TF-IDF (embedding)
