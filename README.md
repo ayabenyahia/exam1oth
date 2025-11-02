@@ -18,7 +18,7 @@ L’objectif est de fournir un outil simple, visuel et rapide permettant aux ét
 → basé sur la distance de Levenshtein pour une mesure fine mot par mot
 → basé sur Jaccard Similarity qui compare deux ensembles en calculant le rapport entre leurs éléments communs et leur union totale.
 → basé sur Cosine Similarity (Méthode vectorielle) pour mesurer la similarité entre deux textes en calculant l'angle entre leurs vecteurs de fréquence de mots.
-→ basé sur TF-IDF (Intelligence Artificielle) pour une mesure fine mot par mot
+→ basé sur TF-IDF (Intelligence Artificielle) pour une mesure fine mot par mot sans tenir compte des Mots courants ("le", "la", "de") → Peu importants
 
 🎨 Affichage visuel dynamique avec une barre de progression colorée
 → la couleur change selon le niveau de ressemblance (vert → rouge)
@@ -43,9 +43,12 @@ Plus de 80 % : Plagiat confirmé
 
 Frontend : HTML5, CSS3, JavaScript 
 
-Backend : Python
+Backend : Python / Flask
 
-Algorithme : Distance de Levenshtein
+Algorithme : - Distance de Levenshtein
+             - Jaccard Similarity
+             - Cosine Similarity (Méthode vectorielle)
+             - TF-IDF ( Term Frequency - Inverse Document Frequency)
 
 Frontend développé par : SY El Hadji Bassirou et Benyahia Aya
 
