@@ -1,9 +1,32 @@
-// Calcul de la distance de Levenshtein
+// Navigation entre les pages
+function showPage(pageId) {
+  document
+    .querySelectorAll(".page")
+    .forEach((p) => p.classList.remove("active"));
+  document.getElementById(pageId).classList.add("active");
+}
+
+// Gestion de la blacklist
+const blacklist = [];
+
+function ajouterBlacklist() {
+  const nom = document.getElementById("nomBlacklist").value.trim();
+  if (!nom) return alert("Veuillez entrer un nom !");
+  blacklist.push(nom);
+  afficherBlacklist();
+  document.getElementById("nomBlacklist").value = "";
+}
+
+function afficherBlacklist() {
+  const list = document.getElementById("listeBlacklist");
+  list.innerHTML = blacklist.map((n) => `<li>${n}</li>`).join("");
+}
+
+// ---- COMPARATEUR DE TEXTES ---- //
 function levenshtein(a, b) {
   const matrix = Array.from({ length: a.length + 1 }, () =>
     Array(b.length + 1).fill(0)
   );
-
   for (let i = 0; i <= a.length; i++) matrix[i][0] = i;
   for (let j = 0; j <= b.length; j++) matrix[0][j] = j;
 
@@ -17,11 +40,9 @@ function levenshtein(a, b) {
       );
     }
   }
-
   return matrix[a.length][b.length];
 }
 
-// Calcul du taux de similarité
 function calculerSimilarite(texte1, texte2) {
   const distance = levenshtein(texte1, texte2);
   const longueurMax = Math.max(texte1.length, texte2.length);
@@ -30,79 +51,63 @@ function calculerSimilarite(texte1, texte2) {
     : ((1 - distance / longueurMax) * 100).toFixed(2);
 }
 
-// Diagnostic automatique avec couleur
 function interpretation(taux) {
   taux = parseFloat(taux);
-  let message = "";
-  let couleur = "";
-
-  if (taux < 15) {
-    message = "Pas de plagiat";
-    couleur = "green";
-  } else if (taux < 30) {
-    message = "Ressemblance faible (probablement reformulation)";
-    couleur = "limegreen";
-  } else if (taux < 50) {
-    message = "Ressemblance moyenne (suspicion de plagiat partiel)";
-    couleur = "orange";
-  } else if (taux < 80) {
-    message = "Forte similarité (probable plagiat)";
-    couleur = "orangered";
-  } else {
-    message = "Plagiat confirmé (copie quasi directe)";
-    couleur = "red";
-  }
-
-  return { message, couleur };
+  if (taux < 15) return { msg: "Pas de plagiat", color: "green" };
+  if (taux < 30) return { msg: "Ressemblance faible", color: "limegreen" };
+  if (taux < 50) return { msg: "Plagiat partiel", color: "orange" };
+  if (taux < 80) return { msg: "Forte similarité", color: "orangered" };
+  return { msg: "Plagiat confirmé", color: "red" };
 }
 
-// Comparaison mot par mot
-function genererDiff(texte1, texte2) {
-  const mots1 = texte1.split(/\s+/);
-  const mots2 = texte2.split(/\s+/);
-
-  const maxLen = Math.max(mots1.length, mots2.length);
-  let diff1 = "";
-  let diff2 = "";
-
-  for (let i = 0; i < maxLen; i++) {
-    const mot1 = mots1[i] || "";
-    const mot2 = mots2[i] || "";
-
-    if (mot1 === mot2) {
-      diff1 += `<span class="identique">${mot1}</span> `;
-      diff2 += `<span class="identique">${mot2}</span> `;
+function genererDiff(t1, t2) {
+  const mots1 = t1.split(/\s+/);
+  const mots2 = t2.split(/\s+/);
+  const max = Math.max(mots1.length, mots2.length);
+  let diff1 = "",
+    diff2 = "";
+  for (let i = 0; i < max; i++) {
+    if (mots1[i] === mots2[i]) {
+      diff1 += `<span class="identique">${mots1[i] || ""}</span> `;
+      diff2 += `<span class="identique">${mots2[i] || ""}</span> `;
     } else {
-      if (mot1) diff1 += `<span class="different">${mot1}</span> `;
-      if (mot2) diff2 += `<span class="different">${mot2}</span> `;
+      diff1 += `<span class="different">${mots1[i] || ""}</span> `;
+      diff2 += `<span class="different">${mots2[i] || ""}</span> `;
     }
   }
-
   return { diff1, diff2 };
 }
 
-// Événement du bouton
 document.getElementById("comparerBtn").addEventListener("click", () => {
   const texte1 = document.getElementById("texte1").value.trim();
   const texte2 = document.getElementById("texte2").value.trim();
+  const nom = document.getElementById("nomEtudiant").value.trim();
+
+  if (!texte1 || !texte2 || !nom) {
+    alert("Veuillez remplir tous les champs !");
+    return;
+  }
 
   const taux = calculerSimilarite(texte1, texte2);
+  const { msg, color } = interpretation(taux);
 
-  // Diagnostic automatique
-  const { message, couleur } = interpretation(taux);
-  const diagEl = document.getElementById("diagnostic");
-  diagEl.textContent = message;
-  diagEl.style.color = couleur;
-  diagEl.style.fontWeight = "bold";
+  const diag = document.getElementById("diagnostic");
+  diag.textContent = `${msg} (${taux}%)`;
+  diag.style.color = color;
 
-  // Barre principale = affichage du taux
   const progress = document.getElementById("progress-bar");
   progress.style.width = taux + "%";
-  progress.style.backgroundColor = couleur;
-  progress.textContent = taux + "% de similarité";
+  progress.style.backgroundColor = color;
+  progress.textContent = taux + "%";
 
-  // Comparaison visuelle
   const { diff1, diff2 } = genererDiff(texte1, texte2);
   document.getElementById("diff1").innerHTML = diff1;
   document.getElementById("diff2").innerHTML = diff2;
+
+  // Si plagiat fort, on ajoute le nom à la blacklist
+  if (taux > 70 && !blacklist.includes(nom)) {
+    blacklist.push(nom);
+    afficherBlacklist();
+  }
 });
+
